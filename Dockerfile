@@ -1,7 +1,6 @@
 ARG CUDA_IMAGE="12.1.1-devel-ubuntu22.04"
 FROM nvidia/cuda:${CUDA_IMAGE}
 
-# We need to set the host to 0.0.0.0 to allow outside access
 ENV HOST 0.0.0.0
 
 RUN apt-get update && apt-get upgrade -y \
@@ -25,23 +24,28 @@ RUN python3 -m pip install --upgrade pip pytest cmake \
 # Install llama-cpp-python (build with cuda)
 RUN CMAKE_ARGS="-DLLAMA_CUBLAS=on" pip install llama-cpp-python
 
+WORKDIR /app
+
+COPY ./requirements.txt /app/requirements.txt
+COPY ./packages.txt /app/packages.txt
+
+RUN apt-get update && xargs -r -a /app/packages.txt apt-get install -y && rm -rf /var/lib/apt/lists/*
+RUN pip3 install --no-cache-dir -r /app/requirements.txt
+
+# User
 RUN useradd -m -u 1000 user
-# Switch to the "user" user
 USER user
-# Set home to the user's home directory
-ENV HOME=/home/user \
-	PATH=/home/user/.local/bin:$PATH \
-    PYTHONPATH=$HOME/app \
-	PYTHONUNBUFFERED=1 \
-	GRADIO_ALLOW_FLAGGING=never \
-	GRADIO_NUM_PORTS=1 \
-	GRADIO_SERVER_NAME=0.0.0.0 \
-	GRADIO_THEME=huggingface \
-	SYSTEM=spaces
+ENV HOME /home/user
+ENV PATH $HOME/.local/bin:$PATH
 
+WORKDIR $HOME
+RUN mkdir app
 WORKDIR $HOME/app
+COPY . $HOME/app
 
-# Copy the current directory contents into the container at $HOME/app setting the owner to the user
-COPY --chown=user . $HOME/app
-
-CMD ["python3", "app.py"]
+EXPOSE 8501
+CMD streamlit run app.py \
+    --server.headless true \
+    --server.enableCORS false \
+    --server.enableXsrfProtection false \
+    --server.fileWatcherType none
