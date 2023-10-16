@@ -1,6 +1,10 @@
 import streamlit as st
 
-st.write("Aqui estoy")
+st.set_page_config(
+    page_title="TeoBot",
+    page_icon="👋",
+)
+
 
 from visual.teobot_page import TeoBotPage
 
