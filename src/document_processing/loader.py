@@ -15,7 +15,7 @@ def process_markdown_files(folder_path):
                 if line.startswith('# '):
                     title += f'{line[2:]} ' 
                     break
-            content.replace('#', '').replace("\n", " ").replace("\\", "").replace("[[" , "").replace("]]", "")
+            content = content.replace('#', '').replace("\n", " ").replace("\\", "").replace("[[" , "").replace("]]", "")
             if title == '':
                 title = "Untitled" 
 
