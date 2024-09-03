@@ -12,6 +12,9 @@ def upsert(collection_name, search):
 def collections():
     return db.list_collection_names()
 
+def collection(collection_name):
+    return db[collection_name]
+
 def find_element(collection_name, search={}):
     collection = db[collection_name]
     return list(collection.find(search).sort({'_id': 1}))
