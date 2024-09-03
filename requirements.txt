@@ -13,10 +13,14 @@ jiter==0.5.0
 numpy==2.0.2
 openai==1.43.0
 pandas==2.2.2
+pinecone==5.1.0
+pinecone-plugin-inference==1.0.3
+pinecone-plugin-interface==0.0.7
 pydantic==2.8.2
 pydantic_core==2.20.1
 pymongo==4.8.0
 python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
 pytz==2024.1
 requests==2.32.3
 six==1.16.0

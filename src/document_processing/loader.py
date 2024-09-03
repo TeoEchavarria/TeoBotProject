@@ -2,11 +2,6 @@ import os
 from src.utils.mongodb import insert, find_one, update_one, collection
 from src.embeddings.embedder import get_embedding_from_markdown
 
-
-def update_all_updated():
-    for element in collection("notes"):
-        update_one("notes", {"id": element["id"]}, {"updated": True})
-
 def process_data_embeddings():
     for element in collection("notes"):
         if not element["updated"]:

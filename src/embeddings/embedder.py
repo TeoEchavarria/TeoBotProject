@@ -4,7 +4,6 @@ from src.utils.mongodb import find_element
 
 # Set up your OpenAI API credentials
 openai.api_key = os.getenv('OPENAI_API_KEY')
-print(f'OpenAI API Key: {openai.api_key}')
 
 def get_embedding_from_markdown(element):
     # Fetch the content from the Markdown URL
