@@ -5,6 +5,14 @@ import os
 client = MongoClient(os.getenv('MONGODB_URI'))
 db = client["NotesEmbeddings"]
 
+def find_one(collection_name, search_parameters):
+    collection = db[collection_name]
+    return collection.find_one(search_parameters)
+
+def update_one(collection_name, search_parameters, new_values):
+    collection = db[collection_name]
+    return collection.update_one(search_parameters, {'$set': new_values}, upsert=True)
+
 def upsert(collection_name, search):
     collection = db[collection_name]
     return collection.update_one({'_id': search["_id"]}, {'$set': search}, upsert=True)
@@ -13,11 +21,11 @@ def collections():
     return db.list_collection_names()
 
 def collection(collection_name):
-    return db[collection_name]
+    return list(db[collection_name].find())
 
 def find_element(collection_name, search={}):
     collection = db[collection_name]
-    return list(collection.find(search).sort({'_id': 1}))
+    return list(collection.find(search))
 
 def insert(collection_name, data):
     collection = db[collection_name]
