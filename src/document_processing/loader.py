@@ -1,5 +1,17 @@
 import os
-from src.utils.mongodb import insert, find_one, update_one
+from src.utils.mongodb import insert, find_one, update_one, collection
+from src.embeddings.embedder import get_embedding_from_markdown
+
+
+def update_all_updated():
+    for element in collection("notes"):
+        update_one("notes", {"id": element["id"]}, {"updated": True})
+
+def process_data_embeddings():
+    for element in collection("notes"):
+        if not element["updated"]:
+            update_one("notes", {"id": element["id"]}, get_embedding_from_markdown(element))  
+
 
 def process_markdown_files(folder_path):
     markdown_files = [f for f in os.listdir(folder_path) if f.endswith('.md')]
@@ -40,5 +52,4 @@ def process_markdown_files(folder_path):
                     "embedding_content": None,
                     "updated": False
                 }
-                print(f"Inserting {title} into the database")
                 insert("notes", data) 
