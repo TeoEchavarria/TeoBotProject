@@ -43,7 +43,6 @@ def process_markdown_files(folder_path):
                     "id": element_id,
                     "title": title,
                     "content": content,
-                    "embedding_title": None,
                     "embedding_content": None,
                     "updated": False
                 }
