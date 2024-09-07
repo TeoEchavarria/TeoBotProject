@@ -37,12 +37,13 @@ async def search_embeddings(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if await authenticate(update):
         try:
             logger.info(update.message.text, type(update.message.text))
-            answer = await response_flow(update.message.text) if update.message.text != "/search" else {"text": "No matches found"}
+            context_emb , answer = await response_flow(update.message.text) if update.message.text != "/search" else ["", {"text": "No matches found"}]
             with open(f"context_{update.message.from_user.username}.txt", "w") as file:
+                file.write(context_emb)
                 file.write(answer["text"])
         except Exception as e:
             logger.error(e)
-            answer = "I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"
+            answer = {"text": "SEARCH: I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"}
         await context.bot.send_message(chat_id=update.effective_chat.id, text = answer["text"])
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this bot")
@@ -56,7 +57,7 @@ async def talk(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 file.write(answer["text"])
         except Exception as e:
             logger.error(e)
-            answer = "I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"
+            answer = {"text": "I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"}
         await context.bot.send_message(chat_id=update.effective_chat.id, text = answer["text"])
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this bot")

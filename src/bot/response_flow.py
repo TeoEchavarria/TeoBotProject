@@ -8,10 +8,11 @@ logger = LoggingUtil.setup_logger()
 async def response_flow(question):
     logger.info("Searching for matches")
     embedding = search(question)["matches"]
-    logger.info(f"Matches found: {embedding}")
+    if len(embedding) == 0:
+        return "", {"text": "No matches found"}
     context = "\n".join([f'TITLE:{match["metadata"]["title"]}={match["metadata"]["content"]}' for match in embedding])
     
     logger.info("Generating answer")
     answer = generate_answer(context, question)
     
-    return answer
+    return context, answer
