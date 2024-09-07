@@ -40,6 +40,7 @@ To get started with TeoBot, follow these simple steps:
     PINECONE_API_KEY=your_pinecone_api_key
     TELEGRAM_TOKEN=your_telegram_bot_token
     MARKDOWN_NOTES=your_markdown_dirpath
+    CONTEXT=""
     ```
 
 4. Create a `validusernames.txt` file in the root directory, separated by commas, containing the Telegram usernames of the users you want to grant access to:
@@ -48,15 +49,13 @@ To get started with TeoBot, follow these simple steps:
     username1,username2,username3
     ```
 
-5. Create a `context.txt` file in the root directory. This file will be used to store the conversation context:
-
-6. Install the required dependencies and set up the project:
+5. Install the required dependencies and set up the project:
 
     ```bash
     pip install -r requirements.txt
     ```
 
-7. Run TeoBot:
+6. Run TeoBot:
 
     ```bash
     python setup.py
