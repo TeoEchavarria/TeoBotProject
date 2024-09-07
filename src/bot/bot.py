@@ -1,12 +1,6 @@
-import logging
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler
 from src.bot.handlers import start, search
 import os
-
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
 
 def main():
     application = ApplicationBuilder().token(os.getenv("TELEGRAM_TOKEN")).build()
