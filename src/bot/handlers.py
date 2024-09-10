@@ -36,13 +36,12 @@ async def search_embeddings(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from src.bot.response_flow import response_flow
     if await authenticate(update):
         try:
-            logger.info(update.message.text, type(update.message.text))
             context_emb , answer = await response_flow(update.message.text) if update.message.text != "/search" else ["", {"text": "No matches found"}]
-            with open(f"context_{update.message.from_user.username}.txt", "w") as file:
+            with open(f"context_{update.message.from_user.username}.txt", "a") as file:
                 file.write(context_emb)
                 file.write(answer["text"])
-        except Exception as e:
-            logger.error(e)
+        except Exception:
+            logger.error("Error generating answer with embeddings")
             answer = {"text": "SEARCH: I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"}
         await context.bot.send_message(chat_id=update.effective_chat.id, text = answer["text"])
     else:
@@ -53,10 +52,10 @@ async def talk(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if await authenticate(update):
         try:
             answer = generate_answer(os.getenv("CONTEXT"), update.message.text)
-            with open(f"context_{update.message.from_user.username}.txt", "w") as file:
+            with open(f"context_{update.message.from_user.username}.txt", "a") as file:
                 file.write(answer["text"])
-        except Exception as e:
-            logger.error(e)
+        except Exception:
+            logger.error("Error generating answer")
             answer = {"text": "I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"}
         await context.bot.send_message(chat_id=update.effective_chat.id, text = answer["text"])
     else:
