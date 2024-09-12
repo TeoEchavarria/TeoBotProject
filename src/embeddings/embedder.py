@@ -11,7 +11,7 @@ def get_embedding(text):
 
 def get_embedding_from_markdown(element):
     # Fetch the content from the Markdown URL
-    title = element["title"]
+    url = element["url"]
     content = element["content"]
 
     # Create the embedding using the OpenAI API
@@ -23,7 +23,7 @@ def get_embedding_from_markdown(element):
     # Return the JSON structure
     return {
         "id": element["id"],
-        "title": title,
+        "url": url,
         "content": content,
         "embedding_content": embedding_vector_content,
         "updated": True

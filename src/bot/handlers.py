@@ -6,6 +6,8 @@ import os
 
 logger = LoggingUtil.setup_logger()
 
+message_not_permissions = "You are not authorized to use this bot"
+
 async def look_context(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if await authenticate(update):
         with open(f"context_{update.message.from_user.username}.txt", "r") as file:
@@ -14,7 +16,7 @@ async def look_context(update: Update, context: ContextTypes.DEFAULT_TYPE):
             context_file = "No context found"
         await context.bot.send_message(chat_id=update.effective_chat.id, text=context_file)
     else:
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this bot")
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=message_not_permissions)
 
 async def clear_context(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if await authenticate(update):
@@ -22,7 +24,7 @@ async def clear_context(update: Update, context: ContextTypes.DEFAULT_TYPE):
             file.write("")
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Context cleared")
     else:
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this bot")
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=message_not_permissions)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if await authenticate(update):
@@ -30,7 +32,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         open(file_path, "w").close()
         await context.bot.send_message(chat_id=update.effective_chat.id, text="¡Hola! Soy tu asistente de notas, aquí para ayudarte a organizar tus ideas con la tecnología de Pinecone y OpenAI.")
     else:
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this bot")
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=message_not_permissions)
 
 async def search_embeddings(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from src.bot.response_flow import response_flow
@@ -45,7 +47,7 @@ async def search_embeddings(update: Update, context: ContextTypes.DEFAULT_TYPE):
             answer = {"text": "SEARCH: I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"}
         await context.bot.send_message(chat_id=update.effective_chat.id, text = answer["text"])
     else:
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this bot")
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=message_not_permissions)
 
 async def talk(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from src.bot.response import generate_answer
@@ -59,4 +61,16 @@ async def talk(update: Update, context: ContextTypes.DEFAULT_TYPE):
             answer = {"text": "I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"}
         await context.bot.send_message(chat_id=update.effective_chat.id, text = answer["text"])
     else:
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this bot")
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=message_not_permissions)
+        
+async def run_markdown_files(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    from src.document_processing.loader import process_markdown_files
+    if await authenticate(update):
+        try:
+            process_markdown_files(os.getenv("MARKDOWN_NOTES"))
+            await context.bot.send_message(chat_id=update.effective_chat.id, text="Markdown files processed")
+        except Exception:
+            logger.error("Error processing markdown files")
+            await context.bot.send_message(chat_id=update.effective_chat.id, text="Error processing markdown files")
+    else:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=message_not_permissions)

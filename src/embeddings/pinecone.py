@@ -12,7 +12,7 @@ async def upsert_embeddings_to_pinecone():
                     "id": element["id"],
                     "values": element["embedding_content"],
                     "metadata": {
-                        "title": element["title"],
+                        "url": element["url"],
                         "content": element["content"]
                     }
                 }
