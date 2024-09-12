@@ -19,7 +19,7 @@ def process_markdown_files(folder_path):
             url = file_path.split("/")[-1].replace(".md", "").replace(" ", "-")
             content = content.replace('#', '').replace("\n", " ").replace("\\", "").replace("[[" , "").replace("]]", "")
 
-            existing_document = False # find_one("notes", {"url": url})
+            existing_document = find_one("notes", {"url": url})
             print(f"Existing document: {existing_document}")
             if existing_document:
                 updated = False

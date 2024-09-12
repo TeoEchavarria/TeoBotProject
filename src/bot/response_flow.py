@@ -10,9 +10,10 @@ async def response_flow(question):
     embedding = search(question)["matches"]
     if len(embedding) == 0:
         return "", {"text": "No matches found"}
-    context = "\n".join([f'TITLE:{match["metadata"]["title"]}={match["metadata"]["content"]}' for match in embedding])
-    
+    context = [{"url": match["metadata"]["url"], "content" : match["metadata"]["content"]} for match in embedding]
+    context_answer = "\n".join(cont["content"] for cont in context)
+    logger.info(f"\nContext Answer: {context_answer}\n")
     logger.info("Generating answer")
-    answer = generate_answer(context, question)
+    answer = generate_answer(context_answer, question)
     
     return context, answer
