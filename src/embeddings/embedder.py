@@ -22,7 +22,6 @@ def get_embedding_from_markdown(element):
 
     # Return the JSON structure
     return {
-        "id": element["id"],
         "url": url,
         "content": content,
         "embedding_content": embedding_vector_content,

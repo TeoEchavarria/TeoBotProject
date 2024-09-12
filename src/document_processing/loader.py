@@ -5,7 +5,7 @@ from src.embeddings.embedder import get_embedding_from_markdown
 def process_data_embeddings():
     for element in collection("notes"):
         if not element["updated"]:
-            update_one("notes", {"id": element["id"]}, get_embedding_from_markdown(element))  
+            update_one("notes", {"url": element["url"]}, get_embedding_from_markdown(element))  
 
 
 def process_markdown_files(folder_path):
