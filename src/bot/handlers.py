@@ -1,4 +1,4 @@
-from telegram import Update
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from src.bot.authentication import authenticate
 from src.core.logger import LoggingUtil
@@ -44,8 +44,13 @@ async def search_embeddings(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 file.write(answer["text"])
         except Exception:
             logger.error("Error generating answer with embeddings")
-            answer = {"text": "SEARCH: I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"}
-        await context.bot.send_message(chat_id=update.effective_chat.id, text = answer["text"])
+            answer = {"text": "SEARCH: I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"}        
+        keyboard = [
+        [InlineKeyboardButton(note["url"].replace("-", " "), url=f"{os.getenv('WEB_NOTES')}{note["url"]}") for note in context_emb]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text = answer["text"], reply_markup=reply_markup)
+        
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text=message_not_permissions)
 
