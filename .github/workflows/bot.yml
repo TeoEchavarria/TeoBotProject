@@ -10,10 +10,6 @@ on:
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    env:
-      USER_ACCESS: ${{ secrets.USER_ACCESS }}
-      START_MESSAGE_FILE: ${{ secrets.START_MESSAGE_FILE }}
-      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -29,5 +25,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Bot
+        env:
+          USER_ACCESS: ${{ secrets.USER_ACCESS }}
+          START_MESSAGE_FILE: ${{ secrets.START_MESSAGE_FILE }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
         run: |
           python setup.py
