@@ -46,7 +46,7 @@ async def search_embeddings(update: Update, context: ContextTypes.DEFAULT_TYPE):
             logger.error("Error generating answer with embeddings")
             answer = {"text": "SEARCH: I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"}        
         keyboard = [
-        [InlineKeyboardButton(note["url"].replace("-", " "), url=f"{os.getenv('WEB_NOTES')}{note["url"]}") for note in context_emb]
+        [InlineKeyboardButton(note["url"].replace("-", " "), url=f"{os.getenv('WEB_NOTES')}{note['url']}") for note in context_emb]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await context.bot.send_message(chat_id=update.effective_chat.id, text = answer["text"], reply_markup=reply_markup)
@@ -82,9 +82,11 @@ async def run_markdown_files(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 async def run_pinecone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from src.document_processing.loader import process_data_embeddings
+    from src.embeddings.pinecone import upsert_embeddings_to_pinecone
     if await authenticate(update):
         try:
-            process_data_embeddings()
+            await process_data_embeddings()
+            await upsert_embeddings_to_pinecone()
             await context.bot.send_message(chat_id=update.effective_chat.id, text="Pinecone updated")
         except Exception:
             logger.error("Error updating Pinecone")

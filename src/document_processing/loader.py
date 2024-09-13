@@ -2,7 +2,7 @@ import os
 from src.utils.mongodb import insert, find_one, update_one, collection
 from src.embeddings.embedder import get_embedding_from_markdown
 
-def process_data_embeddings():
+async def process_data_embeddings():
     for element in collection("notes"):
         if not element["updated"]:
             update_one("notes", {"url": element["url"]}, get_embedding_from_markdown(element))  

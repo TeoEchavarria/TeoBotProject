@@ -17,4 +17,4 @@ async def upsert_embeddings_to_pinecone():
                     }
                 }
             for element in collection("notes")]
-    index.upsert(vectors=pinecone_vectors, namespace="ns1")
+    index.upsert(vectors=pinecone_vectors, namespace="ns2")
