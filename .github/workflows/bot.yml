@@ -10,6 +10,10 @@ on:
 jobs:
   run-bot:
     runs-on: ubuntu-latest
+    env:
+      USER_ACCESS: ${{ secrets.USER_ACCESS }}
+      START_MESSAGE_FILE: ${{ secrets.START_MESSAGE_FILE }}
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -24,10 +28,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Debug Environment Variables
+        run: |
+          if [ -z "$USER_ACCESS" ]; then
+            echo "USER_ACCESS is not set"
+            exit 1
+          else
+            echo "USER_ACCESS is set"
+          fi
+
       - name: Run Bot
-        env:
-          USER_ACCESS: ${{ secrets.USER_ACCESS }}
-          START_MESSAGE_FILE: ${{ secrets.START_MESSAGE_FILE }}
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
         run: |
           python setup.py
