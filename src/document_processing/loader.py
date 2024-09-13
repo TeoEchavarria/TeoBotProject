@@ -2,10 +2,10 @@ import os
 from src.utils.mongodb import insert, find_one, update_one, collection
 from src.embeddings.embedder import get_embedding_from_markdown
 
-def process_data_embeddings():
+async def process_data_embeddings():
     for element in collection("notes"):
         if not element["updated"]:
-            update_one("notes", {"id": element["id"]}, get_embedding_from_markdown(element))  
+            update_one("notes", {"url": element["url"]}, get_embedding_from_markdown(element))  
 
 
 def process_markdown_files(folder_path):
@@ -16,34 +16,27 @@ def process_markdown_files(folder_path):
         file_path = os.path.join(folder_path, file_name)
         with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read()
-            lines = content.split('\n')
-            title = ''
-            for line in lines:
-                if line.startswith('# '):
-                    title += f'{line[2:]} ' 
-                    break
+            url = file_path.split("/")[-1].replace(".md", "").replace(" ", "-")
             content = content.replace('#', '').replace("\n", " ").replace("\\", "").replace("[[" , "").replace("]]", "")
-            if title == '':
-                title = "Untitled" 
 
-            element_id = os.path.splitext(file_name)[0] 
-            existing_document = find_one("notes", {"id": element_id})
+            existing_document = find_one("notes", {"url": url})
+            print(f"Existing document: {existing_document}")
             if existing_document:
                 updated = False
-                if existing_document["title"] != title or existing_document["content"] != content:
+                if existing_document["url"] != url or existing_document["content"] != content:
                     updated = True
                 update_data = {
-                    "title": title,
+                    "url": url,
                     "content": content,
                     "updated": not updated
                 }
-                update_one("notes", {"id": element_id}, update_data)  
+                update_one("notes", {"url": url}, update_data)  
             else:
                 data = {
-                    "id": element_id,
-                    "title": title,
+                    "url": url,
                     "content": content,
                     "embedding_content": None,
                     "updated": False
                 }
+                print(data)
                 insert("notes", data) 

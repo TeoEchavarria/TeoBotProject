@@ -1,0 +1,31 @@
+# .github/workflows/bot.yml
+
+name: Run Telegram Bot
+
+on:
+  workflow_dispatch:  # Allows manual triggering
+  schedule:
+    - cron: '0 */6 * * *'
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Bot
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        run: |
+          python setup.py

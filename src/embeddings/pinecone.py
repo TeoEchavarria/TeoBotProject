@@ -9,12 +9,12 @@ index = pc.Index("notescontent")
 async def upsert_embeddings_to_pinecone():
     pinecone_vectors = [
                 {
-                    "id": element["id"],
+                    "id": element["url"],
                     "values": element["embedding_content"],
                     "metadata": {
-                        "title": element["title"],
+                        "url": element["url"],
                         "content": element["content"]
                     }
                 }
             for element in collection("notes")]
-    index.upsert(vectors=pinecone_vectors, namespace="ns1")
+    index.upsert(vectors=pinecone_vectors, namespace="ns2")

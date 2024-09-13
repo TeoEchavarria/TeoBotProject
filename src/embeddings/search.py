@@ -8,7 +8,7 @@ index = pc.Index("notescontent")
 def search(text):
     text_embedding = get_embedding(text)
     return index.query(
-    namespace="ns1",
+    namespace="ns2",
     vector=text_embedding,
     top_k=2,
     include_metadata=True

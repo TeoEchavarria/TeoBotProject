@@ -1,9 +1,9 @@
 from telegram import Update
+import os
 
 async def authenticate(update: Update):
     user = update.message.from_user
-    with open('./validusernames.txt', 'r') as file:
-        usernames = file.read().split(',')
+    usernames = os.getenv("USER_ACCESS").split(',')
 
     if user.username in usernames:
         return True
