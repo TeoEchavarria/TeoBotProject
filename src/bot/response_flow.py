@@ -12,8 +12,5 @@ async def response_flow(question):
         return "", {"text": "No matches found"}
     context = [{"url": match["metadata"]["url"], "content" : match["metadata"]["content"]} for match in embedding]
     context_answer = "\n".join(cont["content"] for cont in context)
-    logger.info(f"\nContext Answer: {context_answer}\n")
-    logger.info("Generating answer")
-    answer = generate_answer(context_answer, question)
-    
+    answer = generate_answer(context_answer, question.replace("/search ", ""))
     return context, answer

@@ -11,10 +11,7 @@ message_not_permissions = "You are not authorized to use this bot"
 async def look_context(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if await authenticate(update):
         with open(f"context_{update.message.from_user.username}.txt", "r") as file:
-            context_file = file.read()
-        if context_file == "":
-            context_file = "No context found"
-        await context.bot.send_message(chat_id=update.effective_chat.id, text=context_file)
+            await context.bot.send_document(chat_id=update.effective_chat.id, document=file)
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text=message_not_permissions)
 
@@ -40,10 +37,10 @@ async def search_embeddings(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             context_emb , answer = await response_flow(update.message.text) if update.message.text != "/search" else ["", {"text": "No matches found"}]
             with open(f"context_{update.message.from_user.username}.txt", "a") as file:
-                file.write(context_emb)
+                file.write("\n".join([cont["content"] for cont in context_emb]))
                 file.write(answer["text"])
-        except Exception:
-            logger.error("Error generating answer with embeddings")
+        except Exception as e:
+            logger.error(f"Error generating answer with embeddings : {e}")
             answer = {"text": "SEARCH: I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"}        
         keyboard = [
         [InlineKeyboardButton(note["url"].replace("-", " "), url=f"{os.getenv('WEB_NOTES')}{note['url']}") for note in context_emb]
