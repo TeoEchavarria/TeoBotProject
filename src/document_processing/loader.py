@@ -1,6 +1,6 @@
 import os
 from src.utils.mongodb import insert, find_one, update_one, collection
-from src.embeddings.embedder import get_embedding_from_markdown
+from src.services.embeddings.embedder import get_embedding_from_markdown
 
 async def process_data_embeddings():
     for element in collection("notes"):
