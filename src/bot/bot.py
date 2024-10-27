@@ -26,7 +26,7 @@ def main():
     pinecone_handler = CommandHandler('runpine', run_pinecone)
     application.add_handler(pinecone_handler)
     
-    search_handler = MessageHandler(filters=None, callback=talk)
-    application.add_handler(search_handler)
+    talk_handler = MessageHandler(filters=None, callback=talk)
+    application.add_handler(talk_handler)
     
     application.run_polling()
