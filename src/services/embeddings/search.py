@@ -1,4 +1,4 @@
-from src.embeddings.embedder import get_embedding
+from src.services.embeddings.embedder import get_embedding
 from pinecone import Pinecone
 import os
 
