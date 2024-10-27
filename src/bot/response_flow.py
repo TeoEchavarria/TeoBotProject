@@ -1,4 +1,4 @@
-from src.embeddings.search import search
+from src.services.embeddings.search import search
 from src.bot.response import generate_answer
 from src.core.logger import LoggingUtil
 import os
