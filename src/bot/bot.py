@@ -2,6 +2,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler
 from src.bot.handlers.basic import start, talk, clear_context, look_context, page
 from src.bot.handlers.embeddings import run_markdown_files, run_pinecone
 from src.bot.handlers.search import search_embeddings
+from src.bot.handlers.credentials import github_handler
 import os
 
 def main():
@@ -27,6 +28,9 @@ def main():
     
     pinecone_handler = CommandHandler('runpine', run_pinecone)
     application.add_handler(pinecone_handler)
+
+    github_command_handler = CommandHandler('github', github_handler, pass_args=True)
+    application.add_handler(github_command_handler)
     
     talk_handler = MessageHandler(filters=None, callback=talk)
     application.add_handler(talk_handler)
