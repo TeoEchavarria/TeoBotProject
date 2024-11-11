@@ -13,9 +13,9 @@ def update_one(collection_name, search_parameters, new_values):
     collection = db[collection_name]
     return collection.update_one(search_parameters, {'$set': new_values}, upsert=True)
 
-def upsert(collection_name, search):
+def upsert(collection_name, search, update_data):
     collection = db[collection_name]
-    return collection.update_one({'_id': search["_id"]}, {'$set': search}, upsert=True)
+    return collection.update_one(search, {'$set': update_data}, upsert=True)
 
 def collections():
     return db.list_collection_names()

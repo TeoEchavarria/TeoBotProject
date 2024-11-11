@@ -30,15 +30,3 @@ def get_github_directory_files(owner, repo, directory_path):
         return file_urls
     else:
         raise Exception(f"Failed to retrieve directory contents: {response.json().get('message')}")
-
-# Example usage:
-owner = 'TeoEchavarria'  # Replace with GitHub username or organization name
-repo = 'knowledge'  # Replace with the repository name
-directory_path = '_notes/Public'  # Replace with the path to the directory
-
-try:
-    files = get_github_directory_files(owner, repo, directory_path)
-    for filename, url in files.items():
-        print(f"{filename}: {url}")
-except Exception as e:
-    print(e)
