@@ -1,5 +1,7 @@
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler
-from src.bot.handlers import start, talk, search_embeddings, clear_context, look_context, run_markdown_files, run_pinecone, page
+from src.bot.handlers.basic import start, talk, clear_context, look_context, page
+from src.bot.handlers.embeddings import run_markdown_files, run_pinecone
+from src.bot.handlers.search import search_embeddings
 import os
 
 def main():
