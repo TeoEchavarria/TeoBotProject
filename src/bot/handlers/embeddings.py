@@ -22,7 +22,7 @@ async def run_markdown_files(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 async def run_pinecone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from src.document_processing.loader import process_data_embeddings
-    from src.embeddings.pinecone import upsert_embeddings_to_pinecone
+    from src.services.embeddings.pinecone import upsert_embeddings_to_pinecone
     if await authenticate(update):
         try:
             await process_data_embeddings()

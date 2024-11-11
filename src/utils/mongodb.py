@@ -3,7 +3,7 @@ from pymongo import MongoClient
 import os
 
 client = MongoClient(os.getenv('MONGODB_URI'))
-db = client["TeoBot"]
+db = client["Notes_bot"]
 
 def find_one(collection_name, search_parameters):
     collection = db[collection_name]
