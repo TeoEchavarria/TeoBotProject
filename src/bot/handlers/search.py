@@ -9,8 +9,10 @@ message_not_permissions = "You are not authorized to use this bot"
 
 async def search_embeddings(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from src.bot.response_flow import response_flow
+    from src.utils.mongodb import find_one
     try:
-        context_emb , answer = await response_flow(update.message.text) if update.message.text != "/search" else ["", {"text": "No matches found"}]
+        user = find_one("users", {"_id": update.message.from_user.username})
+        context_emb , answer = await response_flow(update.message.text, user["openai_key"]) if update.message.text != "/search" else ["", {"text": "No matches found"}]
         with open(f"context_{update.message.from_user.username}.txt", "a") as file:
             file.write("\n".join([cont["content"] for cont in context_emb]))
             file.write(answer["text"])

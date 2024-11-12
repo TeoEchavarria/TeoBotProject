@@ -7,6 +7,34 @@ import os
 
 logger = LoggingUtil.setup_logger()
 
+async def pinecone_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    args = context.args
+    if len(args) != 1:
+        await update.message.reply_text('Usage: /pinecone <pinecone_key>')
+        return
+
+    pinecone_key = args[0]
+    try:
+        add_or_update_key(update.message.from_user.username, pinecone_key=pinecone_key)
+        await update.message.reply_text("Pinecone key added to user")
+    except Exception as e:
+        logger.error(e)
+        await update.message.reply_text("Error using pinecone handler - Try again")
+
+async def openai_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    args = context.args
+    if len(args) != 1:
+        await update.message.reply_text('Usage: /openai <openai_key>')
+        return
+    
+    openai_key = args[0]
+    try:
+        add_or_update_key(update.message.from_user.username, openai_key=openai_key)
+        await update.message.reply_text("OpenAI key added to user")
+    except Exception as e:
+        logger.error(e)
+        await update.message.reply_text("Error using openai handler - Try again")
+
 async def github_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
     if len(args) != 3:

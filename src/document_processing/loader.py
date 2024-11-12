@@ -23,19 +23,19 @@ async def update_markdown_files(context, update, user_name, files = None):
         create_db_and_collection(user["mongo_key"], "Notes_bot", "notes")
         if not files:
             files = get_github_directory_files(user["owner"], user["repo"], user["directory_path"])
-        await process_markdown_files(context, update, files)
+        await process_markdown_files(context, update, user["openai_key"], files)
         return files
     except Exception as e:
         logger.error(f"Error updating markdown files: {e}")
         raise Exception("Error updating markdown files")
 
-async def process_markdown_files(context, update, files, mongo_key = None):
+async def process_markdown_files(context, update, files, openai_key,mongo_key = None):
     count = 0
     for file_name, url_content in files.items():
         content = download_file_content(url_content)
         content = content.replace('#', '').replace("\n", " ").replace("\\", "").replace("[[" , "").replace("]]", "")
         existing_document = find_one("notes", {"_id": file_name}, mongo_key)
-        embedding = get_embedding(content)
+        embedding = get_embedding(content, openai_key)
         if existing_document:
             updated = False
             if existing_document["_id"] != file_name or existing_document["content"] != content:

@@ -11,12 +11,12 @@ Helpful Answer:
 
 logger = LoggingUtil.setup_logger()
 
-def generate_answer(context, question):
+def generate_answer(context, question, openai_key):
     llm = ChatOpenAI(
         model="gpt-4o-mini",
         temperature=0.8,
         max_retries=2,
-        api_key=os.getenv('OPENAI_API_KEY')
+        api_key=openai_key
     )
     
     structure_llm = llm.with_structured_output(Response)

@@ -57,7 +57,7 @@ def delete(collection_name, search_parameters):
     result = collection.delete_many(search_parameters)
     return result.deleted_count
 
-def add_or_update_key(username, mongo_key=None, owner=None, repo=None, directory_path=None, notes=None):
+def add_or_update_key(username, mongo_key=None, owner=None, repo=None, directory_path=None, notes=None, pinecone_key=None, openai_key=None):
     search = {
         "_id": username
     }
@@ -66,7 +66,9 @@ def add_or_update_key(username, mongo_key=None, owner=None, repo=None, directory
         "owner": owner,
         "repo": repo,
         "directory_path": directory_path,
-        "notes" : notes
+        "notes" : notes,
+        "pinecone_key": pinecone_key,
+        "openai_key": openai_key
     }
     # Remove any None values, only update provided values
     update_data = {k: v for k, v in update_data.items() if v is not None}
