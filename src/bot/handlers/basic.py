@@ -35,12 +35,13 @@ async def look_context(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
 
-async def clear_context(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def clear_context(update: Update, context: ContextTypes.DEFAULT_TYPE, silent=False):
     with open(f"context_{update.message.from_user.username}.txt", "w") as file:
         file.write("")
-    await context.bot.send_message(
-        chat_id=update.effective_chat.id, text="Context cleared"
-    )
+    if not silent:
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id, text="Context cleared"
+        )
 
 
 async def talk(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -49,8 +50,10 @@ async def talk(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         user = find_one("users", {"_id": update.message.from_user.username})
+        with open(f"context_{update.message.from_user.username}.txt", "r") as file:
+            context_content = file.read()
         answer = generate_answer(
-            os.getenv("CONTEXT"), update.message.text, user["openai_key"]
+            context_content, update.message.text, user["openai_key"]
         )
         with open(f"context_{update.message.from_user.username}.txt", "a") as file:
             file.write(answer["text"])
@@ -60,5 +63,5 @@ async def talk(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "text": "I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"
         }
     await context.bot.send_message(
-        chat_id=update.effective_chat.id, text=answer["text"]
+        chat_id=update.effective_chat.id, text=answer["text"], parse_mode="Markdown"
     )
