@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+
+import sys
+import subprocess
+
+# Obtener la lista de archivos modificados
+result = subprocess.run(['git', 'diff', '--cached', '--name-only', '--diff-filter=ACM'], stdout=subprocess.PIPE)
+files = result.stdout.decode().splitlines()
+
+# Filtrar archivos Python
+python_files = [f for f in files if f.endswith('.py')]
+
+# Si no hay archivos Python, salir
+if not python_files:
+    sys.exit(0)
+
+# Verificar cada archivo
+for file in python_files:
+    # Comprobar errores de sintaxis
+    result = subprocess.run(['python', '-m', 'py_compile', file])
+    if result.returncode != 0:
+        print(f"Error de sintaxis encontrado en {file}. Commit abortado.")
+        sys.exit(1)
+
+sys.exit(0)
