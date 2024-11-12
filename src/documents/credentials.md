@@ -1,0 +1,4 @@
+- Pinecone API Key `/pinecone <pinecone_key>`
+- OpenAI API Key `/openai <openai_key>`
+- MongoDB Key `/mongo <mongo_key>`
+- GitHub Repository Notes Configuration `/github <user_name> <repo> <directory_path>`

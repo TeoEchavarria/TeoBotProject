@@ -1,6 +1,13 @@
-🤖 ¡Hola! Soy TeoBot asistente personal:
+🤖 Hello! I'm TeoBot, your personal assistant:
 
-- **Buscar** 🔍: Usa el comando `/search` seguido de tu consulta para buscar entre tus notas usando embeddings.
-- **Ver Contexto** 📄: Escribe `/look` para obtener el contexto actual.
-- **Limpiar Contexto** 🧹: Utiliza `/clear` para limpiar el contexto guardado.
-- **Navegar Notas** 📖: Accede a la página base de tus notas con el comando `/page`.
+Before starting enter the credentials required for my operation.
+
+- **Docs Credentials 🗝️**: Utilize the ```/credentials``` command to configure your service API keys.
+
+After entering the credentials, you will be able to use the basic commands:
+
+- **Search 🔍**: Use the command `/search` followed by your query to search through your notes using embeddings.
+
+- **View Context 📄**: Type `/look` to obtain the current context.
+
+- **Clear Context 🧹**: Use `/clear` to clear the saved context.
