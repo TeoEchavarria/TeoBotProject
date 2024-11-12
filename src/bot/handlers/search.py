@@ -10,8 +10,10 @@ message_not_permissions = "You are not authorized to use this bot"
 
 async def search_embeddings(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from src.bot.response_flow import response_flow
+    from src.bot.handlers.basic import clear_context
     from src.utils.mongodb import find_one
     user = find_one("users", {"_id": update.message.from_user.username})
+    await clear_context(update, context, True)
     try:
         context_emb, answer = (
             await response_flow(update.message.text, user["openai_key"], user["pinecone_key"], user["mongo_key"])
