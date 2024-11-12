@@ -1,6 +1,7 @@
 import requests
 import os
 
+
 def get_github_directory_files(owner, repo, directory_path):
     """
     Fetch the download URLs for all files in a specific directory of a GitHub repository.
@@ -17,16 +18,18 @@ def get_github_directory_files(owner, repo, directory_path):
     token = os.getenv("GITHUB_TOKEN")
     url = f"https://api.github.com/repos/{owner}/{repo}/contents/{directory_path}"
     headers = {
-        'Authorization': f'token {token}',
-        'Accept': 'application/vnd.github.v3.raw'
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3.raw",
     }
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         files = response.json()
         file_urls = {}
         for file in files:
-            if file['type'] == 'file':
-                file_urls[file['name']] = file['download_url']
+            if file["type"] == "file":
+                file_urls[file["name"]] = file["download_url"]
         return file_urls
     else:
-        raise Exception(f"Failed to retrieve directory contents: {response.json().get('message')}")
+        raise Exception(
+            f"Failed to retrieve directory contents: {response.json().get('message')}"
+        )

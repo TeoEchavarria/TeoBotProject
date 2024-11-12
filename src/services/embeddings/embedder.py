@@ -3,6 +3,7 @@ import os
 
 # Set up your OpenAI API credentials
 
+
 def get_embedding(text, openai_key):
     # Create the embedding using the OpenAI API
     openai.api_key = openai_key

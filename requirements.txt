@@ -6,15 +6,19 @@ anyio==4.4.0
 async-timeout==4.0.3
 attrs==24.2.0
 certifi==2024.8.30
+cfgv==3.4.0
 charset-normalizer==3.3.2
 dataclasses-json==0.6.7
+distlib==0.3.9
 distro==1.9.0
 dnspython==2.6.1
 exceptiongroup==1.2.2
+filelock==3.16.1
 frozenlist==1.4.1
 h11==0.14.0
 httpcore==1.0.5
 httpx==0.27.2
+identify==2.6.2
 idna==3.8
 jiter==0.5.0
 jsonpatch==1.33
@@ -29,6 +33,7 @@ langsmith==0.1.116
 marshmallow==3.22.0
 multidict==6.0.5
 mypy-extensions==1.0.0
+nodeenv==1.9.1
 numpy==1.26.4
 openai==1.43.0
 orjson==3.10.7
@@ -37,6 +42,8 @@ pandas==2.2.2
 pinecone==5.1.0
 pinecone-plugin-inference==1.0.3
 pinecone-plugin-interface==0.0.7
+platformdirs==4.3.6
+pre_commit==4.0.1
 pydantic==2.8.2
 pydantic_core==2.20.1
 pymongo==4.8.0
@@ -58,4 +65,5 @@ typing-inspect==0.9.0
 typing_extensions==4.12.2
 tzdata==2024.1
 urllib3==2.2.2
+virtualenv==20.27.1
 yarl==1.10.0
