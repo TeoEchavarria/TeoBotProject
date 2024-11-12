@@ -1,4 +1,4 @@
-🤖 Hello! I'm TeoBot, your personal assistant:
+Hello! I'm TeoBot, your personal assistant:
 
 Before starting enter the credentials required for my operation.
 
