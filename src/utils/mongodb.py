@@ -38,7 +38,13 @@ def collections():
     return db.list_collection_names()
 
 
-def collection(collection_name):
+def collection(collection_name, mongo_key=None):
+    if mongo_key is not None:
+        client = MongoClient(mongo_key)
+        db = client["Notes_bot"]
+    else:
+        client = MongoClient(os.getenv("MONGODB_URI"))
+        db = client["Notes_bot"]
     return list(db[collection_name].find())
 
 

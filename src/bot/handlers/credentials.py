@@ -58,7 +58,11 @@ async def github_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         count = await update_markdown_files(
             context, update, update.message.from_user.username
         )
+        from src.services.embeddings.pinecone import upsert_embeddings_to_pinecone
+        from src.utils.mongodb import find_one
         message_text = f"{count} Files extract from {owner}/{repo}/{directory_path}"
+        user = find_one("users", {"_id": update.message.from_user.username})
+        upsert_embeddings_to_pinecone(user["pinecone_key"], user["mongo_key"])
         await update.message.reply_text(message_text)
     except Exception as e:
         logger.error(e)

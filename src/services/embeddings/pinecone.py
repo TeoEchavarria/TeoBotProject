@@ -1,19 +1,22 @@
 from pinecone import Pinecone
-import os
-from src.utils.mongodb import collection
+from src.core.logger import LoggingUtil
+from src.utils.mongodb import collection, find_one
 
-# Initialize Pinecone
-pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-index = pc.Index("notescontent")
+logger = LoggingUtil.setup_logger()
 
-
-async def upsert_embeddings_to_pinecone():
-    pinecone_vectors = [
-        {
-            "id": element["url"],
-            "values": element["embedding_content"],
-            "metadata": {"url": element["url"], "content": element["content"]},
-        }
-        for element in collection("notes")
-    ]
-    index.upsert(vectors=pinecone_vectors, namespace="ns2")
+async def upsert_embeddings_to_pinecone(pinecone_key, mongo_key):
+    try:
+        pc = Pinecone(api_key=pinecone_key)
+        index = pc.Index("notescontent")
+        pinecone_vectors = [
+            {
+                "id": element["_id"].encode('ascii', 'ignore').decode('ascii'),
+                "values": element["embedding_content"],
+                "metadata": {"url": element["_id"]}
+            }
+            for element in collection("notes", mongo_key)
+        ]
+        index.upsert(vectors=pinecone_vectors, namespace="ns1")
+    except Exception as e: 
+        logger.error(f"Error upserting embeddings to Pinecone: {e}")
+        raise Exception("Error upserting embeddings to Pinecone")
