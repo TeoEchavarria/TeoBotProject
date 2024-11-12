@@ -36,11 +36,17 @@ async def look_context(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def clear_context(update: Update, context: ContextTypes.DEFAULT_TYPE, silent=False):
-    with open(f"context_{update.message.from_user.username}.txt", "w") as file:
-        file.write("")
-    if not silent:
+    try:
+        with open(f"context_{update.message.from_user.username}.txt", "w") as file:
+            file.write("")
+        if not silent:
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id, text="Context cleared"
+            )
+    except Exception as e:
+        logger.error(f"Error clearing context: {e}")
         await context.bot.send_message(
-            chat_id=update.effective_chat.id, text="Context cleared"
+            chat_id=update.effective_chat.id, text="Error clearing context"
         )
 
 
