@@ -1,7 +1,7 @@
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler
 from src.bot.handlers.basic import talk, clear_context, look_context, page
 from src.bot.handlers.documentation import start, credentials
-from src.bot.handlers.embeddings import run_markdown_files, run_pinecone
+from src.bot.handlers.embeddings import run_markdown_files
 from src.bot.handlers.search import search_embeddings
 from src.bot.handlers.credentials import github_handler, mongo_handler, pinecone_handler, openai_handler
 import os
@@ -46,11 +46,8 @@ def main():
 
     # Embeddings handlers
     
-    markdown_handler = CommandHandler('runmark', run_markdown_files)
+    markdown_handler = CommandHandler('update', run_markdown_files)
     application.add_handler(markdown_handler)
-    
-    pinecone_update_handler = CommandHandler('runpine', run_pinecone)
-    application.add_handler(pinecone_update_handler)
 
     # Talk handler
 

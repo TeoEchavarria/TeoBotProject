@@ -45,8 +45,8 @@ async def github_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         add_or_update_key(update.message.from_user.username, owner=owner, repo=repo, directory_path=directory_path)
-        files = await update_markdown_files(context, update, update.message.from_user.username)
-        message_text = f"{len(files)} Files extract from {owner}/{repo}/{directory_path}"
+        count = await update_markdown_files(context, update, update.message.from_user.username)
+        message_text = f"{count} Files extract from {owner}/{repo}/{directory_path}"
         await update.message.reply_text(message_text)
     except Exception as e:
         logger.error(e)
