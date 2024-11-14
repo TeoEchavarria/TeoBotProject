@@ -35,7 +35,7 @@ async def search_embeddings(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 note["url"].replace("-", " ").replace(".md", "").capitalize(),
                 url=f"{os.getenv('WEB_NOTES')}{note['url'].replace(' ', '-').replace('.md', '')}",
             )
-            for note in context_emb
+            for note in context_emb # Intento
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
