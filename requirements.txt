@@ -46,6 +46,7 @@ platformdirs==4.3.6
 pre_commit==4.0.1
 pydantic==2.8.2
 pydantic_core==2.20.1
+pydub==0.25.1
 pymongo==4.8.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
