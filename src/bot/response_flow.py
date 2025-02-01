@@ -8,7 +8,6 @@ logger = LoggingUtil.setup_logger()
 
 
 async def response_flow(question, openai_key, pinecone_key, mongo_key):
-    logger.info("Searching for matches")
     embedding = await search(question, openai_key, pinecone_key)
     embedding = embedding["matches"]
     if len(embedding) == 0:

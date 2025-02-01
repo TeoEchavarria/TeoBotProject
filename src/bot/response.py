@@ -21,7 +21,6 @@ def generate_answer(context, question, openai_key):
 
     def invoke():
         try:
-            logger.info("Generating answer for question")
             return structure_llm.invoke(
                 custom_prompt.format(context=context, question=question)
             )

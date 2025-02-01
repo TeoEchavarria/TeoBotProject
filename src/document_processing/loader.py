@@ -1,8 +1,8 @@
 import os
 import requests
-from src.utils.mongodb import insert, find_one, update_one, collection
+from src.utils.mongodb import insert, find_one, update_one
 from src.services.embeddings.embedder import get_embedding
-from src.services.github.github_extract import get_github_directory_files
+from src.services.github_extract import get_github_directory_files
 from src.core.logger import LoggingUtil
 
 logger = LoggingUtil.setup_logger()
