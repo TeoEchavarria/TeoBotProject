@@ -1,8 +1,8 @@
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler
-from src.bot.handlers.basic import talk, clear_context, look_context, page
+from src.bot.handlers.basic import clear_context, look_context, page
+from src.bot.handlers.talk import talk
 from src.bot.handlers.documentation import start, credentials
 from src.bot.handlers.embeddings import run_markdown_files
-from src.bot.handlers.search import search_embeddings
 from src.bot.handlers.credentials import (
     github_handler,
     mongo_handler,
@@ -26,9 +26,6 @@ def main():
 
     page_handler = CommandHandler("page", page)
     application.add_handler(page_handler)
-
-    search_handler = CommandHandler("search", search_embeddings)
-    application.add_handler(search_handler)
 
     clean_context_handler = CommandHandler("clear", clear_context)
     application.add_handler(clean_context_handler)
