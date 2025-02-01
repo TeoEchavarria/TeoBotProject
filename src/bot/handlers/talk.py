@@ -10,10 +10,12 @@ from src.utils.mongodb import find_one
 
 async def talk(update: Update, context: ContextTypes.DEFAULT_TYPE):
      # 1. Check if the user sent a voice note or a text message
+    user = find_one("users", {"_id": update.message.from_user.username})
+    reply_markup = None
     if update.message.voice:
         # It's a voice note
         try:
-            user_message_text, time = await transcribe_voice(update, context)
+            user_message_text, time = await transcribe_voice(update, context, user["openai_key"])
             if time == -1:
                 await context.bot.send_message(
                     chat_id=update.effective_chat.id,
@@ -30,8 +32,6 @@ async def talk(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_message_text = update.message.text
 
     try:
-        user = find_one("users", {"_id": update.message.from_user.username})
-        reply_markup = None
         with open(f"context_{update.message.from_user.username}.txt", "r") as file:
             context_content = file.read()
         

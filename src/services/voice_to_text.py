@@ -5,10 +5,10 @@ from telegram.ext import ContextTypes
 from openai import OpenAI
 from pydub import AudioSegment
 
-async def transcribe_voice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
+async def transcribe_voice(update: Update, context: ContextTypes.DEFAULT_TYPE, open_ai_apiKey) -> str:
     file_id = update.message.voice.file_id
     voice_file = await context.bot.get_file(file_id)
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    client = OpenAI(api_key=open_ai_apiKey)
     
     with tempfile.NamedTemporaryFile(delete=True, suffix=".ogg") as tf:
         await voice_file.download_to_drive(tf.name)
