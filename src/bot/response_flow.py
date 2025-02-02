@@ -18,6 +18,6 @@ async def response_flow(question, openai_key, pinecone_key, mongo_key):
     ]
     context_answer = "\n".join(cont["content"] for cont in context)
     answer = generate_answer(
-        context_answer, question.replace("/search ", ""), openai_key
+        context_answer, question, openai_key
     )
     return context, answer
