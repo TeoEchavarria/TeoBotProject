@@ -2,8 +2,8 @@ import json
 import os
 from openai import OpenAI
 
-def generate_answer(context, question, openai_key) -> dict:
-        openai_key = None  
+def generate_answer(context, question, openai_key, mode = "response") -> dict:
+    try:
         if openai_key is None:
             client = OpenAI(
                 base_url="http://localhost:11434/v1",  # default Ollama port
@@ -15,33 +15,8 @@ def generate_answer(context, question, openai_key) -> dict:
         
         prompt = "" if openai_key is None else "You have a free membership"
 
-        json_format = {
-            "type": "json_schema",
-            "json_schema": {
-                "name": "response",
-                "strict": True,
-                "schema": {
-                    "type": "object",
-                    "properties": {
-                        "text": {
-                            "type": "string",
-                            "description": "The main text content"
-                        },
-                        "image_url": {
-                            "type": "string",
-                            "description": "URL of the image. In the case of existing"
-                        },
-                        "link_url": {
-                            "type": "number",
-                            "description": "URL of a related link. In the case of existing"
-                        },
-                    },
-                    "required": ["text", "image_url", "link_url"],
-                    "additionalProperties": False
-                }
-            }
-        }
-
+        # mode = ["response", "pdf_extract", "note_create"]
+        json_format = json.load(open(f'src/bot/functions/{mode}.json'))
 
         # Call the chat completion
         response = client.chat.completions.create(
@@ -74,3 +49,6 @@ def generate_answer(context, question, openai_key) -> dict:
         )
 
         return json.loads(response.choices[0].message.content)
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"text": "I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"}
