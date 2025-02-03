@@ -1,0 +1,39 @@
+{
+    "title": "Iteration 2 - Enriched Note",
+    "description": "Object representing an enriched note, featuring a concise summary, key insights, practical examples, defined relationships, and a reference to its original source.",
+    "type": "object",
+    "properties": {
+    "title": {
+      "type": "string",
+      "description": "Title of the note."
+      },
+    "description": {
+      "type": "string",
+      "description": "A detailed and comprehensive explanation of the note's central concept, providing context, multiple facets, and supporting information to enhance understanding."
+      },
+    "key_points": {
+        "type": "array",
+        "description": "List of essential key points that concisely summarize the concept.",
+        "items": {
+          "type": "string"
+        }
+      },
+    "tags": {
+        "type": "array",
+        "description": "List of tags that categorize the note, providing a quick overview of its content.",
+        "items": {
+          "type": "string"
+        }
+      },
+    "practical_examples": {
+        "type": "array",
+        "description": "A list of practical examples that effectively illustrate the concept.",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "required": ["title", "description", "key_points", "tags", "practical_examples"],
+    "additionalProperties": false
+  }
+  
