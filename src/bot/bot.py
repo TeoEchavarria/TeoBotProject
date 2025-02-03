@@ -1,6 +1,7 @@
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
 from src.bot.handlers.basic import clear_context, look_context, page
 from src.bot.handlers.talk import talk
+from src.bot.handlers.pdf import handle_pdf
 from src.bot.handlers.documentation import start, credentials
 from src.bot.handlers.embeddings import run_markdown_files
 from src.bot.handlers.credentials import (
@@ -51,6 +52,11 @@ def main():
 
     markdown_handler = CommandHandler("update", run_markdown_files)
     application.add_handler(markdown_handler)
+
+    # PDF handler
+    
+    pdf_handler = MessageHandler(filters.Document.PDF, handle_pdf)
+    application.add_handler(pdf_handler)
 
     # Talk handler
 
