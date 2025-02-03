@@ -1,29 +1,34 @@
 {
-    "title": "Iteration 1 - Extracted Important Notes",
+  "type": "json_schema",
+  "json_schema":{
+    "name": "iteration1",
     "description": "Object that contains the list of important notes extracted from the PDF, each with a unique identifier, title, and relationships with other notes, providing essential context.",
-    "type": "object",
-    "properties": {
-      "notes": {
-        "type": "array",
-        "description": "List of notes extracted from the document.",
-        "items": {
-          "type": "object",
-          "properties": {
-            "title": {
-                "type": "string",
-                "description": "Short and descriptive title of the note."
-            },
-            "description-note": {
-                "type": "string",
-                "description": "Short description of the topic covered in the note."
+    "schema": {
+        "type": "object",
+        "properties": {
+          "notes": {
+            "type": "array",
+            "description": "List of notes extracted from the document.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                    "type": "string",
+                    "description": "Short and descriptive title of the note."
+                },
+                "description-note": {
+                    "type": "string",
+                    "description": "Short description of the topic covered in the note."
+                }
+              },
+              "required": ["title", "description-note"],
+              "additionalProperties": false
             }
-          },
-          "required": ["title", "description-note"],
-          "additionalProperties": false
-        }
-      }
-    },
-    "required": ["notes"],
-    "additionalProperties": false
+          }
+        },
+      "required": ["notes"],
+      "additionalProperties": false
+    }
+  }
 }
   
