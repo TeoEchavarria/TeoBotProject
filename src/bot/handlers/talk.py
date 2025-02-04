@@ -36,11 +36,7 @@ async def talk(update: Update, context: ContextTypes.DEFAULT_TYPE):
             context_content = file.read()
         
         if user_message_text.split(" ")[0].lower().replace(",", "").replace(".", "") in ["search","busca", "buscar"]:
-            context_emb, answer = (
-                await response_flow(user_message_text, user["openai_key"], user["pinecone_key"], user["mongo_key"])
-                if update.message.text != "/search"
-                else ["", {"text": "No matches found"}]
-            )
+            context_emb, answer = await response_flow(user_message_text, user["openai_key"], user["pinecone_key"], user["mongo_key"])
             keyboard = [
                 [
                     InlineKeyboardButton(
@@ -57,7 +53,7 @@ async def talk(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         with open(f"context_{update.message.from_user.username}.txt", "a") as file:
             file.write(answer["text"])
-    except Exception:
+    except Exception as e:
         answer = {
             "text": "I'm sorry I couldn't generate an answer for you. Would you like to ask me something else?"
         }

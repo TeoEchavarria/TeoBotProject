@@ -1,0 +1,57 @@
+{
+  "type": "json_schema",
+  "json_schema": {
+    "name": "iteration2",
+    "description": "Object representing an enriched note, including a concise summary, key insights, practical examples, mathematical formulas in Typst, and code snippets. Return the note enriched with additional information that provides a deeper understanding of the subject matter. Language: Spanish.",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the note."
+        },
+        "description": {
+          "type": "string",
+          "description": "A concise summary that captures the essential content of the note."
+        },
+        "key_points": {
+          "type": "array",
+          "description": "A list of key insights and takeaways from the note.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "description": "Tags that categorize the note.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "practical_examples": {
+          "type": "array",
+          "description": "Practical examples that illustrate the concepts in the note.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "math_formulas": {
+          "type": "array",
+          "description": "Mathematical formulas written in Typst format.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "code_snippets": {
+          "type": "array",
+          "description": "Code snippets that demonstrate technical concepts.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["title", "description", "key_points", "tags", "practical_examples"],
+      "additionalProperties": false
+    }
+  }
+}
