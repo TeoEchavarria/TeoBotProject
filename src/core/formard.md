@@ -9,4 +9,8 @@ tags: {tags}
 
 {key_points}
 
+{math_formulas}
+
+{code_snippets}
+
 {practical_examples}

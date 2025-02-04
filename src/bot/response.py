@@ -20,7 +20,7 @@ def generate_answer(context, question, openai_key, mode = "response") -> dict:
 
         # Call the chat completion
         response = client.chat.completions.create(
-            model="deepseek-r1:7b" if openai_key is None else "gpt-4o-mini",  
+            model="deepseek-r1:7b" if openai_key is None else "gpt-4o-2024-08-06",  
             messages=[
                 {
                     "role": "system",

@@ -2,7 +2,7 @@
   "type": "json_schema",
   "json_schema":{
     "name": "iteration1",
-    "description": "Object that contains the list of important notes extracted from the PDF, each with a unique identifier, title, and relationships with other notes, providing essential context.",
+    "description": "Extract from the PDF the central ideas and fundamental arguments, identifying key inferences and differentiating points that allow a deep understanding of the document's message. The task is to analyze the content, discard redundant information and synthesize only the most important parts, highlighting concepts, relevant quotes and implicit conclusions that provide a complete and in-depth view of the subject matter.",
     "schema": {
         "type": "object",
         "properties": {

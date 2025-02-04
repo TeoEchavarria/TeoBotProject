@@ -1,4 +1,4 @@
-import tempfile, zipfile, PyPDF2, os
+import tempfile, PyPDF2, os
 from datetime import datetime
 
 from src.bot.response import generate_answer
@@ -12,7 +12,7 @@ async def handle_pdf(update: Update, context: CallbackContext) -> None:
     document = update.message.document
 
     if document.mime_type != 'application/pdf':
-        await update.message.reply_text("Por favor, envíame un archivo PDF.")
+        await update.message.reply_text("Please send me a PDF file. Only PDF files are allowed.")
         return
 
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp_pdf:
@@ -31,7 +31,7 @@ async def handle_pdf(update: Update, context: CallbackContext) -> None:
                     pdf_text += text
 
         if not pdf_text:
-            await update.message.reply_text("No se pudo extraer texto del PDF.")
+            await update.message.reply_text("Could not extract text from the PDF.")
             return
 
         user = find_one("users", {"_id": update.message.from_user.username})
@@ -51,8 +51,10 @@ async def handle_pdf(update: Update, context: CallbackContext) -> None:
         try:
             for note in results["notes"]:
                 format = generate_answer(context=note["title"], question=note["description-note"], openai_key=openai_key, mode="note_create")
+                format["math_formulas"] = "\n".join(f"$$ {formula} $$\n" for formula in format["math_formulas"])
+                format["code_snippets"] = "\n".join(f"```\n{snippet}\n```" for snippet in format["code_snippets"])
                 format["key_points"] = "\n".join(f"- {point}" for point in format["key_points"])
-                format["practical_examples"] = "\n".join(f">[!example] {example}" for example in format["practical_examples"])
+                format["practical_examples"] = "\n".join(f">[!example] {example}\n" for example in format["practical_examples"])
                 format["date"] = datetime.now().strftime("%d-%m-%Y")
                 with open("src/core/formard.md", "r", encoding="utf8") as f:
                     template_md = f.read()
@@ -66,10 +68,6 @@ async def handle_pdf(update: Update, context: CallbackContext) -> None:
 
         with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as tmp_zip:
             zip_path = create_zip_from_notes(notes)
-
-        # with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zipf:
-        #     for filename, file_content in results.items():
-        #         zipf.writestr(filename, file_content)
 
         with open(zip_path, "rb") as zip_file:
             await update.message.reply_document(document=zip_file, filename="resultados.zip", caption="Aquí están los archivos extraídos en formato .md")
