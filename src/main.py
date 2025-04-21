@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from src.bot.response import answer_with_dynamic_schema
+from src.bot.response import answer_with_parsed_json
 
 app = FastAPI()
 
@@ -10,4 +10,4 @@ class ExecuteRequest(BaseModel):
 
 @app.post("/execute")
 async def execute(request: ExecuteRequest):
-    return answer_with_dynamic_schema(request.question)
+    return answer_with_parsed_json(request.question)
