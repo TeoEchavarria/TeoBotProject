@@ -48,15 +48,14 @@ def build_dynamic_model_class(options: List[SuggestionOption]) -> type[BaseModel
 
 # ─── Main two‑step function ────────────────────────────────────────────────────
 def answer_with_parsed_json(question: str) -> Dict[str, Any]:
-    logger.info("Question: %s", question)
+    logger.info("Question: %s", question )
 
     # --- Step 1: Suggest presentation formats, parsed as JSON --------------
     resp1 = client.beta.chat.completions.parse(
-        model="o3-mini-2025-01-31",
+        model="gpt-4o-mini-2024-07-18",
         messages=[
             {"role": "system", "content":
-                "Extract creative presentation options. "
-                "Return a JSON object with an 'options' array of {title, description, type}."
+                "Design an optimal answer framework by listing the steps (mechanisms) you’d follow to respond to a complex question for a highly novice audience who knows nothing about the subject but is curious and wants to learn through metaphors, examples, and analogies. Your response must be “chewed up”—very simple—and each step must include at least one concrete example and one metaphor or analogy. For each step, include: 1. The mechanism name. 2. Its purpose. A brief justification. What kind of content such a mechanism should return."
             },
             {"role": "user", "content": question}
         ],
@@ -71,13 +70,12 @@ def answer_with_parsed_json(question: str) -> Dict[str, Any]:
 
     # --- Step 2: Force JSON response matching dynamic model ---------------
     resp2 = client.beta.chat.completions.parse(
-        model="gpt-4o-search-preview-2025-03-11",
+        model="gpt-4o-mini-2024-07-18",
         messages=[
             {"role": "system", "content":
-                "Generate a JSON object with keys exactly matching the earlier option titles "
-                "(in snake_case), each value a string presenting the solution in that style."
+                "Response in a smooth, short, bold and expert manner. Only return the most valuable and relevant information."
             },
-            {"role": "user", "content": question}
+            {"role": "user", "content": question + "\n".join([opt.model_dump()["description"] for opt in opts])}
         ],
         response_format=PresentationModel
     )
@@ -85,12 +83,6 @@ def answer_with_parsed_json(question: str) -> Dict[str, Any]:
 
     # --- Consolidate result -----------------------------------------------
     return {
-        "options": [opt.dict() for opt in opts],
+        "options": [opt.model_dump() for opt in opts],
         "presentation": presentation.dict()
     }
-
-# ─── Example Usage ───────────────────────────────────────────────────────────
-if __name__ == "__main__":
-    q = "Explain what a neural network is, using varied presentation styles."
-    result = answer_with_parsed_json(q)
-    print(json.dumps(result, indent=2, ensure_ascii=False))
