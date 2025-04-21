@@ -60,7 +60,7 @@ def answer_with_dynamic_schema(question: str):
         # Esquema de la primera función
         suggestion_schema = {
             "name": "suggest_presentation_formats",
-            "description": "Genera opciones creativas para presentar la solución.",
+            "description": "Generate creative options for presenting the solution. Use camelcase for titles, parameter descriptions should be short and concise.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -71,7 +71,7 @@ def answer_with_dynamic_schema(question: str):
                             "properties": {
                                 "title": {"type": "string"},
                                 "description": {"type": "string"},
-                                "type": {"type": "string"},
+                                "type": {"type": "string", "enum": ["string", "object", "array", "integer"]},
                                 "payload": {"type": "object"}
                             },
                             "required": ["title", "description", "type", "payload"]
@@ -86,7 +86,7 @@ def answer_with_dynamic_schema(question: str):
         logger.info("Making first API call to get presentation options")
         try:
             suggest_resp = client.chat.completions.create(
-                model="o1-mini",
+                model="o3-mini-2025-01-31",
                 messages=[
                     {"role":"system","content":(
                         "Eres un asistente creativo. Recibe la pregunta y llama **solo** a "
