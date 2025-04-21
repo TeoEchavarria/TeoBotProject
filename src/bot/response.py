@@ -75,14 +75,11 @@ def answer_with_parsed_json(question: str) -> Dict[str, Any]:
             {"role": "system", "content":
                 "Response in a smooth, short, bold and expert manner. Only return the most valuable and relevant information."
             },
-            {"role": "user", "content": question + "\n" + "\n".join([opt.model_dump()["description"] for opt in opts])}
+            {"role": "user", "content": question + "\n".join([opt.model_dump()["description"] for opt in opts])}
         ],
         response_format=PresentationModel
     )
     presentation: PresentationModel = resp2.choices[0].message.parsed
 
     # --- Consolidate result -----------------------------------------------
-    return {
-        "options": [opt.model_dump() for opt in opts],
-        "presentation": presentation.dict()
-    }
+    return {opt.title: presentation.model_dump()[normalize_key(opt.title)] for opt in opts}
