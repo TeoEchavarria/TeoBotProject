@@ -1,6 +1,6 @@
 from pinecone import Pinecone
 from src.core.logger import LoggingUtil
-from src.utils.mongodb import collection, find_one
+from future_use.services.mongodb import collection, find_one
 
 logger = LoggingUtil.setup_logger()
 
