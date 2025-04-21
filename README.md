@@ -1,35 +1,54 @@
 # TeoBot: Your Personal Knowledge Companion
 
-TeoBot is a personalized chatbot designed to help you manage and interact with your personal notes. It is an intelligent tool that organizes your information, retrieves insights, and responds to your queries based on the provided data. TeoBot is your ideal companion for enhancing productivity, learning, and personal growth.
+TeoBot is a FastAPI‑powered service that turns any natural‑language question into a two‑step, JSON‑structured answer:
+1. It suggests a presentation framework (metaphors, examples, analogies).
+2. It returns the final answer following that framework.
 
-## How to Use TeoBot
+## Features
 
-To start using TeoBot, you first need to provide some credentials that enable its functionality. These credentials are:
+- Two‑step GPT‑4O process for structured, bite‑sized explanations  
+- Dynamic Pydantic model generation for schema‑validated JSON  
+- FastAPI endpoint for easy integration  
+- Optional Docker configuration for containerized deployment  
 
-- **Pinecone API Key**: Required for searching notes using embeddings, allowing TeoBot to find the most relevant notes based on your query.
-- **OpenAI API Key**: Used to answer questions and create embeddings for your notes.
-- **MongoDB Key**: Used to store all your notes along with their embeddings, enabling efficient information management.
-- **GitHub Repository and Path**: Specifies the GitHub repository where your notes are stored and the directory path where they can be found.
+## Prerequisites
 
-### Providing Credentials
+- Python 3.10+  
+- [OpenAI API Key](https://platform.openai.com/docs/api-reference/authentication)  
+- [MongoDB URI](https://www.mongodb.com/docs/atlas/getting-started/)  
+- (Optional) Pinecone API Key for embeddings  
 
-You can provide the credentials using the following commands within the Telegram chatbot:
+## Installation
 
-- **Pinecone API Key**: Use the command `/pinecone <pinecone_key>`.
-- **OpenAI API Key**: Use the command `/openai <openai_key>`.
-- **MongoDB Key**: Use the command `/mongo <mongo_key>`.
-- **GitHub Notes Configuration**: Use the command `/github <username> <repository> <directory_path>`.
+1. Clone the repo  
+2. Create a virtual env and install dependencies  
+   ```sh
+   python -m venv .venv
+   source .venv/bin/activate
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
 
-If you need more information on how to obtain these keys, refer to the documentation of each provider:
+## Running Locally
+```sh
+uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+```
+The API is now available at http://localhost:8000.
 
-- **Pinecone**: Visit [Pinecone Documentation](https://docs.pinecone.io/) and follow the instructions to create an account and generate an API key.
-- **OpenAI**: Visit [OpenAI API Documentation](https://platform.openai.com/docs/api-reference/authentication) to obtain your API key.
-- **MongoDB**: Refer to the [MongoDB Atlas Guide](https://www.mongodb.com/docs/atlas/getting-started/) to set up a database and obtain the URI.
-- **GitHub**: To configure access to your notes, you need a GitHub repository that contains your notes in markdown format. Follow the [GitHub Guide](https://docs.github.com/en/get-started) to create a repository and get the necessary access.
+## Docker
+Build and run with:
+```sh
+docker build -t teobot .
+docker run -e OPENAI_API_KEY -e MONGODB_URI -p 80:80 teobot
+```
 
-## Basic Commands of TeoBot
-
-To get a complete list of TeoBot's basic commands, please refer to the [comandos.md](https://github.com/TeoEchavarria/TeoBotProject/blob/master/src/documents/comands.md) file within the repository.
+## Usage
+POST your question to `/execute`:
+```sh
+curl -X POST http://localhost:8000/execute \
+  -H "Content-Type: application/json" \
+  -d '{"question":"¿Cómo funciona la fotosíntesis?"}'
+```
 
 ## Contribution
 
