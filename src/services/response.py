@@ -37,16 +37,22 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 # ─── Main two‑step function ────────────────────────────────────────────────────
 def answer_with_parsed_json(question: str, step_by_step : bool, language: str = "Spanish", profile : str = "default") -> Dict[str, Any]:
 
-    # --- Step 1: Suggest presentation formats, parsed as JSON --------------
-    # --- Step 1: Get presentation formats as JSON -------------------------
-    start_profile_content = _read_profile_file("start", profile)
-    
     resp1 = client.beta.chat.completions.parse(
         model="gpt-4o-mini-2024-07-18",
         messages=[
-            {"role": "system", "content":
-                f"Design an optimal response framework by listing the steps (mechanisms) you would follow to answer a complex question. {start_profile_content} For each step, include 1. The name of the mechanism. 2. Its purpose. 3. A brief justification. What kind of content the mechanism should return."
-            }
+            {"role": "system", "content":"""
+You are a world-class Prompt Engineering specialist. Your goal is to generate, for any user question, a multi-step response framework—not the answer itself—formatted as a JSON array of step objects.
+
+Overall requirements  
+- Don't answer the user's question; just generate the framework, the reasoning for how to answer that question.  
+- Always start with a rich, free-text rationale before deciding on any supplemental mechanism.  
+- Allow at most one supplemental mechanism:  
+  - "search_video" if you need external video clarifications.
+  - "generate_image" if you need an illustrative visual (describe composition, style, colors, and elements).  
+  - "generate_graphic" only if you need a chart with defined X- and Y-axes (specify axis labels, data relationships, layout).  
+"""
+            },
+            {"role": "user", "content": question},
         ],
         response_format=SuggestionResponse,
     )
@@ -63,13 +69,10 @@ def answer_with_parsed_json(question: str, step_by_step : bool, language: str = 
     # --- Step 2: Force JSON response matching dynamic model ---------------
     response_profile_content = _read_profile_file("response", profile)
     
-    option_descriptions = "\n".join([opt.model_dump()["description"] for opt in opts]) if opts else ""
-    user_content = f"{question}\n\n{option_descriptions}" if option_descriptions else question
-    
     messages = [
         {"role": "system", "content": response_profile_content},
         {"role": "system", "content": f"Response to {language}."},
-        {"role": "user", "content": user_content}
+        {"role": "user", "content": question}
     ]
 
     resp2 = client.beta.chat.completions.parse(
@@ -82,5 +85,5 @@ def answer_with_parsed_json(question: str, step_by_step : bool, language: str = 
     action_results = execute_functions(action_opts)
 
     # --- Consolidate result -----------------------------------------------
-    presentation_data = format_answer_with_parsed_json(presentation, step_by_step)
+    presentation_data = format_answer_with_parsed_json(presentation.model_dump(), step_by_step)
     return  {**presentation_data, **action_results}

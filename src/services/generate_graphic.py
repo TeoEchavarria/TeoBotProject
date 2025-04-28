@@ -1,8 +1,8 @@
-import openai  # type: ignore
-import tempfile, textwrap, traceback, uuid, contextlib, io, types as _types
+import tempfile, traceback, uuid
 import os
 from pathlib import Path
 from typing import Any, Dict
+from openai import OpenAI
 
 def chart_code(
     requirement: str,
@@ -18,7 +18,7 @@ def chart_code(
     if not api_key:
         raise RuntimeError("Define OPENAI_API_KEY env var before calling chart_code()")
 
-    openai.api_key = api_key
+    client = OpenAI(api_key=api_key)
 
     if out_path is None:
         out_path = Path(tempfile.gettempdir()) / f"chart_{uuid.uuid4().hex}.png"
@@ -38,7 +38,7 @@ def chart_code(
     ]
 
     for attempt in range(1, max_attempts + 1):
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model=model,
             temperature=temperature,
             messages=messages,

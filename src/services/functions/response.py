@@ -3,9 +3,8 @@ from typing_extensions import Literal
 from pydantic import BaseModel
 
 class SuggestionOption(BaseModel):
-    title: str
     description: str
-    type: Literal["search_video", "generate_image", "generate_graphic" ]
+    type: Literal["text", "search_video", "generate_image", "generate_graphic" ]
 
 class SuggestionResponse(BaseModel):
     options: List[SuggestionOption]

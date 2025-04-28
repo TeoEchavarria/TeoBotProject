@@ -13,7 +13,7 @@ class Answer(BaseModel):
 # ---- single hint --------------------------------------------------------- #
 class Hint(BaseModel):
     """One memory-triggering step."""
-    title: str   # memory_trigger (no minLength in schema)
+    memory_trigger: str 
     question: str
     answer: Answer
 
