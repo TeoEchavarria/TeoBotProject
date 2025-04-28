@@ -1,17 +1,24 @@
-from typing import List, Literal, Optional, Dict, Any
-from pydantic import BaseModel, Field
+from typing import List, Optional
+from pydantic import BaseModel, field_validator
 
 
+# ---- nested answer ------------------------------------------------------- #
+class Answer(BaseModel):
+    """Well-formed answer the learner should reconstruct."""
+    summary: str
+    explanation: str
+    example: Optional[str] = None
+
+
+# ---- single hint --------------------------------------------------------- #
 class Hint(BaseModel):
-    title: str = Field(
-        ...,
-        description="A short, descriptive title for the hint.",
-    )
-    hint: str = Field(
-        ...,
-        description="A concise clue or prompt that nudges the user toward the solution.",
-    )
+    """One memory-triggering step."""
+    title: str   # memory_trigger (no minLength in schema)
+    question: str
+    answer: Answer
 
 
+# ---- response wrapper ---------------------------------------------------- #
 class SuggestStepByStepHintsResponse(BaseModel):
-    options: List[Hint]
+    """Between 4 and 7 hints, inclusive."""
+    hints: List[Hint]
