@@ -19,18 +19,19 @@ logger = logging.getLogger(__name__)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # ─── Main two‑step function ────────────────────────────────────────────────────
-def answer_with_parsed_json(question: str, step_by_step : bool, language: str = "Spanish") -> Dict[str, Any]:
+def answer_with_parsed_json(question: str, step_by_step : bool, language: str = "Spanish", voice : str = "default") -> Dict[str, Any]:
 
     # --- Step 1: Suggest presentation formats, parsed as JSON --------------
     resp1 = client.beta.chat.completions.parse(
         model="gpt-4o-mini-2024-07-18",
         messages=[
             {"role": "system", "content":
-                "Design an optimal answer framework by listing the steps (mechanisms) you’d follow to respond to a complex question for a highly novice audience who knows nothing about the subject but is curious and wants to learn through metaphors, examples, and analogies. Your response must be “chewed up”—very simple—and each step must include at least one concrete example and one metaphor or analogy. For each step, include: 1. The mechanism name. 2. Its purpose. A brief justification. What kind of content such a mechanism should return."
-            },
-            {"role": "user", "content": question}
+                "Design an optimal response framework by listing the steps (mechanisms) you would follow to answer a complex question. " +
+                (open(f"src/services/voices/{voice}.txt", 'r').read().strip() if os.path.exists(f"src/services/voices/{voice}.txt") 
+                 else open("src/services/voices/default.txt", 'r').read().strip()) + "For each step, include 1. The name of the mechanism. 2. 2. Its purpose. 3. A brief justification. What kind of content the mechanism should return."
+            }
         ],
-        response_format= SuggestionResponse,
+        response_format=SuggestionResponse,
     )
     suggestions = resp1.choices[0].message.parsed
     opts = suggestions.options
