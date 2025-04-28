@@ -29,7 +29,7 @@ def format_response_keys(data: dict) -> dict:
     new_key = str(values[0])
     
     # Join the rest of the values as a single string value
-    new_value = "\n".join(str(v) for v in values[1:]) if len(values) > 1 else ""
+    new_value = "\n\n".join(str(v) for v in values[1:]) if len(values) > 1 else ""
     
     # Return a new dictionary with single entry: first value as key, rest joined as value
     return {new_key: new_value}

@@ -2,6 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from src.services.response import answer_with_parsed_json
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
      title="TeoBotProject API - Response BrainyTutor",
@@ -21,7 +28,9 @@ app.add_middleware(
 class ExecuteRequest(BaseModel):
     question: str
     step_by_step: bool = False
+    profile: str = "default"
 
 @app.post("/execute")
 async def execute(request: ExecuteRequest):
+    logger.info(f"Received request: {request}")
     return answer_with_parsed_json(**request.model_dump())
