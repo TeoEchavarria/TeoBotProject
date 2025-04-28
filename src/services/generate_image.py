@@ -8,9 +8,9 @@ from io import BytesIO
 def generate_image(
     prompt: str,
     *,
-    out_path: str | Path = "gemini_image.png",
+    out_path: str = "gemini_image.png",
     model: str = "imagen-3.0-generate-002",
-    aspect_ratio: str | None = None,
+    aspect_ratio: str = None,
 ) -> Path:
     """Generate an image from *prompt* using Google Gemini.
 

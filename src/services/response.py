@@ -4,7 +4,7 @@ from typing import Dict, Any
 from openai import OpenAI
 
 from src.utils.strings import format_answer_with_parsed_json
-from src.utils.pydantic_build import build_dynamic_model_class
+from src.utils.pydantic_build import build_dynamic_model_class, execute_functions
 from src.services.functions.response import SuggestionResponse
 from src.services.functions.step_by_step import SuggestStepByStepHintsResponse
 
@@ -53,9 +53,12 @@ def answer_with_parsed_json(question: str, step_by_step : bool, language: str = 
     
     suggestions = resp1.choices[0].message.parsed
     opts = suggestions.options
+
+    text_opts = [o for o in opts if o.type == "text"]
+    action_opts = [o for o in opts if o.type != "text"]
     
     # --- Build dynamic Pydantic model from those options ------------------
-    presentation_model = build_dynamic_model_class(opts, step_by_step)
+    presentation_model = build_dynamic_model_class(text_opts, step_by_step)
 
     # --- Step 2: Force JSON response matching dynamic model ---------------
     response_profile_content = _read_profile_file("response", profile)
@@ -76,5 +79,8 @@ def answer_with_parsed_json(question: str, step_by_step : bool, language: str = 
     )
     presentation = resp2.choices[0].message.parsed
 
+    action_results = execute_functions(action_opts)
+
     # --- Consolidate result -----------------------------------------------
-    return  format_answer_with_parsed_json(presentation.model_dump(), step_by_step)
+    presentation_data = format_answer_with_parsed_json(presentation, step_by_step)
+    return  {**presentation_data, **action_results}

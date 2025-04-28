@@ -11,7 +11,7 @@ def chart_code(
     model: str = "gpt-4o-mini",
     temperature: float = 0.4,
     max_attempts: int = 3,
-    out_path: Path | str | None = None,
+    out_path: str = None,
 ) -> Path:
 
     api_key = os.getenv("OPENAI_API_KEY")

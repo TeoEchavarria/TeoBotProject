@@ -6,9 +6,9 @@ def youtube_search(
     query: str,
     *,
     max_results: int = 1,
-    safe_search: str | None = None,
-    published_after: str | None = None,
-    language: str | None = None,
+    safe_search: str = None,
+    published_after: str = None,
+    language: str = None,
 ) -> List[Dict[str, Any]]:
     api_key = os.getenv("YOUTUBE_API_KEY")
     if not api_key:
