@@ -10,6 +10,9 @@ from src.services.generate_graphic import chart_code
 
 from typing import Dict, Optional, Type, Literal
 from pydantic import BaseModel, create_model, Field
+import os
+import uuid
+import tempfile
 
 def build_dynamic_model_class(
     options: list["SuggestionOption"],
@@ -45,7 +48,7 @@ def build_dynamic_model_class(
     )
 
 
-def execute_functions(action_opts):
+def execute_functions(action_opts, language: str = "es"):
     action_results = {
         "search_video": [],
         "generate_image": [],
@@ -54,13 +57,13 @@ def execute_functions(action_opts):
     for opt in action_opts:
         try:
             if opt.type == "search_video":
-                videos = youtube_search(query=opt.description or opt.title, max_results=1)
+                videos = youtube_search(query=opt.description, max_results=1, language=language)
                 action_results[opt.type].append(videos[0]["url"] if videos else None)
             elif opt.type == "generate_image":
-                img_path = generate_image(prompt=opt.description or opt.title)
+                img_path = generate_image(prompt=opt.description)
                 action_results[opt.type].append(str(img_path))
             elif opt.type == "generate_graphic":
-                chart_path = chart_code(requirement=opt.description or opt.title)
+                chart_path = chart_code(requirement=opt.description)
                 action_results[opt.type].append(str(chart_path))
         except Exception as e:  # keep flow even if one action fails
             logging.error(f"Error executing function for {opt.type}: {e}")

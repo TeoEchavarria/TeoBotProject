@@ -1,6 +1,5 @@
-import tempfile, traceback, uuid
-import os
-from pathlib import Path
+import traceback
+import os, logging, base64
 from typing import Any, Dict
 from openai import OpenAI
 
@@ -8,22 +7,17 @@ def chart_code(
     requirement: str,
     *,
     viz_library: str = "matplotlib",
-    model: str = "gpt-4o-mini",
-    temperature: float = 0.4,
+    model: str = "o3-mini-2025-01-31",
     max_attempts: int = 3,
     out_path: str = None,
-) -> Path:
+):
 
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise RuntimeError("Define OPENAI_API_KEY env var before calling chart_code()")
 
     client = OpenAI(api_key=api_key)
-
-    if out_path is None:
-        out_path = Path(tempfile.gettempdir()) / f"chart_{uuid.uuid4().hex}.png"
-    else:
-        out_path = Path(out_path)
+    print(f"API Key: {api_key}")
 
     base_system = (
         "You are a senior data‑visualization engineer. "
@@ -40,19 +34,18 @@ def chart_code(
     for attempt in range(1, max_attempts + 1):
         response = client.chat.completions.create(
             model=model,
-            temperature=temperature,
             messages=messages,
         )
         code: str = response.choices[0].message.content.strip()
-
         # Create an execution namespace with OUTPUT_PATH injected
         exec_globals: Dict[str, Any] = {"OUTPUT_PATH": str(out_path)}
         try:
             exec(code, exec_globals)
-            if not out_path.exists():
+            if not exec_globals.get("OUTPUT_PATH"):
                 raise RuntimeError("Code executed without errors but image was not saved to OUTPUT_PATH")
-            return out_path
+            return base64.b64encode(open(exec_globals['OUTPUT_PATH'], 'rb').read()).decode()
         except Exception as e:  # pragma: no cover
+            logging.error(f"Attempt {attempt} failed: {e}")
             tb = traceback.format_exc()
             if attempt == max_attempts:
                 raise RuntimeError(f"Failed after {max_attempts} attempts. Last error:\n{tb}") from e

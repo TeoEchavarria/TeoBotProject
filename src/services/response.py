@@ -41,15 +41,27 @@ def answer_with_parsed_json(question: str, step_by_step : bool, language: str = 
         model="gpt-4o-mini-2024-07-18",
         messages=[
             {"role": "system", "content":"""
-You are a world-class Prompt Engineering specialist. Your goal is to generate, for any user question, a multi-step response framework—not the answer itself—formatted as a JSON array of step objects.
+You are a world-class Prompt Engineering specialist. Your task is **never** to answer the user’s question directly, but to produce a multi-step **reasoning framework**—formatted as a JSON array of step objects—that outlines exactly how one would arrive at the answer.
 
-Overall requirements  
-- Don't answer the user's question; just generate the framework, the reasoning for how to answer that question.  
-- Always start with a rich, free-text rationale before deciding on any supplemental mechanism.  
-- Allow at most one supplemental mechanism:  
-  - "search_video" if you need external video clarifications.
-  - "generate_image" if you need an illustrative visual (describe composition, style, colors, and elements).  
-  - "generate_graphic" only if you need a chart with defined X- and Y-axes (specify axis labels, data relationships, layout).  
+1. **Rationale**  
+   Always begin with a rich, free-text rationale that explains your high-level approach before emitting any JSON.
+
+2. **Framework Structure**  
+   - Output a JSON array where each element is an object with at least:
+     - `"step"`: a short title of the action.
+     - `"description"`: a detailed explanation of what to do in that step.
+     - (optionally) `"supplemental"`: an array of mechanism objects (see below).
+
+3. **Supplemental Mechanisms**  
+   You may include **as many** supplemental mechanisms as are **necessary** to build a complete, clear framework. Use only those that genuinely add clarity:  
+   - `"search_video"` → when an external video reference is needed.  Only topic KEYWORDS, not full sentences.
+   - `"generate_image"` → when an illustrative visual helps (describe composition, style, colors, elements).  
+   - `"generate_graphic"` → only if a chart (with defined X- and Y-axes: labels, data relationships, layout) truly clarifies the underlying theory.
+
+4. **Usage Guidelines**  
+   - Do **not** limit yourself to a single mechanism—choose and combine whichever are required.  
+   - Only generate a graphic if it directly enhances understanding of the theoretical explanation.  
+   - Keep the JSON strictly to the step objects; all narrative belongs in the initial rationale.
 """
             },
             {"role": "user", "content": question},
@@ -74,16 +86,18 @@ Overall requirements
         {"role": "system", "content": f"Response to {language}."},
         {"role": "user", "content": question}
     ]
-
-    resp2 = client.beta.chat.completions.parse(
-        model="o3-mini-2025-01-31" if step_by_step else "gpt-4o-mini-2024-07-18",
-        messages=messages,
-        response_format= SuggestStepByStepHintsResponse if step_by_step else presentation_model 
-    )
-    presentation = resp2.choices[0].message.parsed
+    if presentation_model:
+        resp2 = client.beta.chat.completions.parse(
+            model="o3-mini-2025-01-31" if step_by_step else "gpt-4o-mini-2024-07-18",
+            messages=messages,
+            response_format= SuggestStepByStepHintsResponse if step_by_step else presentation_model 
+        )
+        presentation = resp2.choices[0].message.parsed
+        presentation_data = format_answer_with_parsed_json(presentation.model_dump(), step_by_step)
+    else:
+        presentation_data = None
 
     action_results = execute_functions(action_opts)
 
     # --- Consolidate result -----------------------------------------------
-    presentation_data = format_answer_with_parsed_json(presentation.model_dump(), step_by_step)
     return  {**presentation_data, **action_results}
