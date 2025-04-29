@@ -16,6 +16,13 @@ def youtube_search(
 
     youtube = build("youtube", "v3", developerKey=api_key)
 
+    # Filter the query: split by spaces, remove words with <4 letters, limit to 7 words
+    words = query.split()
+    filtered_words = [word for word in words if len(word) >= 4]
+    filtered_words = filtered_words[:4]  # Limit to 7 words
+    filtered_query = " ".join(filtered_words)
+    
+    query = filtered_query  # Replace original query with filtered version
     # Build API request parameters
     request_kwargs: Dict[str, Any] = {
         "q": query,

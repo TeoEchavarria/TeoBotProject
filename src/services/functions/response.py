@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 class SuggestionOption(BaseModel):
     description: str
-    type: Literal["text", "search_video", "generate_image", "generate_graphic" ]
+    type: Literal["text", "search_video", "search_diagrams", "generate_graphic" ]
 
 class SuggestionResponse(BaseModel):
     options: List[SuggestionOption]

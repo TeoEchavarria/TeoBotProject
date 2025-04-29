@@ -9,7 +9,7 @@ def chart_code(
     viz_library: str = "matplotlib",
     model: str = "o3-mini-2025-01-31",
     max_attempts: int = 3,
-    out_path: str = None,
+    out_path: str = "temp_chart.png",
 ):
 
     api_key = os.getenv("OPENAI_API_KEY")
@@ -64,6 +64,10 @@ def chart_code(
                     ),
                 }
             )
+        finally:
+            # Clean up the generated file if it exists
+            if os.path.exists(out_path):
+                os.remove(out_path)
 
     # Should not reach here
     raise RuntimeError("OpenAI did not return valid code after retries")

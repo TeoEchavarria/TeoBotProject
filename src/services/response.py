@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # ─── Main two‑step function ────────────────────────────────────────────────────
-def answer_with_parsed_json(question: str, step_by_step : bool, language: str = "Spanish", profile : str = "default") -> Dict[str, Any]:
+def answer_with_parsed_json(question: str, step_by_step : bool, language: str = "es", profile : str = "default") -> Dict[str, Any]:
 
     resp1 = client.beta.chat.completions.parse(
         model="gpt-4o-mini-2024-07-18",
@@ -48,20 +48,21 @@ You are a world-class Prompt Engineering specialist. Your task is **never** to a
 
 2. **Framework Structure**  
    - Output a JSON array where each element is an object with at least:
-     - `"step"`: a short title of the action.
-     - `"description"`: a detailed explanation of what to do in that step.
-     - (optionally) `"supplemental"`: an array of mechanism objects (see below).
+     - `"description"`: a detailed explanation of what to do in that step or KEYWORDS.
+     - `"type"`: the type of action to take. ENUM of `text`, `search_video`, `search_diagrams`, or `generate_graphic`.
 
 3. **Supplemental Mechanisms**  
    You may include **as many** supplemental mechanisms as are **necessary** to build a complete, clear framework. Use only those that genuinely add clarity:  
-   - `"search_video"` → when an external video reference is needed.  Only topic KEYWORDS, not full sentences.
-   - `"generate_image"` → when an illustrative visual helps (describe composition, style, colors, elements).  
-   - `"generate_graphic"` → only if a chart (with defined X- and Y-axes: labels, data relationships, layout) truly clarifies the underlying theory.
+   - "search_video" → when an external video reference is needed. Only topic KEYWORDS, not full sentences.
+   - "search_diagrams" → What visual material such as a diagram would be useful to understand the answer to that question. Only topic KEYWORDS, not full sentences.
+   - "generate_graphic" → only if a chart (with defined X- and Y-axes: labels, data relationships, layout) truly clarifies the underlying theory.
 
 4. **Usage Guidelines**  
    - Do **not** limit yourself to a single mechanism—choose and combine whichever are required.  
    - Only generate a graphic if it directly enhances understanding of the theoretical explanation.  
    - Keep the JSON strictly to the step objects; all narrative belongs in the initial rationale.
+             
+Always includes an initial `text` step.
 """
             },
             {"role": "user", "content": question},
@@ -83,7 +84,7 @@ You are a world-class Prompt Engineering specialist. Your task is **never** to a
     
     messages = [
         {"role": "system", "content": response_profile_content},
-        {"role": "system", "content": f"Response to {language}."},
+        {"role": "system", "content": f"Respond with sharp, clear, and concise answers. Use only the essential words. No rambling, no filler. Response to {language}. "},
         {"role": "user", "content": question}
     ]
     if presentation_model:
@@ -95,9 +96,8 @@ You are a world-class Prompt Engineering specialist. Your task is **never** to a
         presentation = resp2.choices[0].message.parsed
         presentation_data = format_answer_with_parsed_json(presentation.model_dump(), step_by_step)
     else:
-        presentation_data = None
+        presentation_data = {}
 
-    action_results = execute_functions(action_opts)
+    action_results = execute_functions(action_opts, language=language, question=question)
 
-    # --- Consolidate result -----------------------------------------------
-    return  {**presentation_data, **action_results}
+    return  {**presentation_data, **action_results} #, "reasoning" : opts 

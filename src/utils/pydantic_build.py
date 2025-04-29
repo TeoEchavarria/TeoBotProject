@@ -1,18 +1,14 @@
 from pydantic import BaseModel, create_model
-from src.utils.strings import normalize_key
 from typing import Dict, Type, Any, Optional
 import logging
 
 # ─── Import custom functions ────────────────────────────────────────────────
 from src.services.search_video import youtube_search
-from src.services.generate_image import generate_image
+from src.services.search_diagrams import search_diagram
 from src.services.generate_graphic import chart_code
 
-from typing import Dict, Optional, Type, Literal
+from typing import Dict, Optional, Type
 from pydantic import BaseModel, create_model, Field
-import os
-import uuid
-import tempfile
 
 def build_dynamic_model_class(
     options: list["SuggestionOption"],
@@ -48,20 +44,21 @@ def build_dynamic_model_class(
     )
 
 
-def execute_functions(action_opts, language: str = "es"):
+def execute_functions(action_opts, language: str = "es", question : str = "") -> Dict[str, Any]:
     action_results = {
         "search_video": [],
-        "generate_image": [],
+        "search_diagrams": [],
         "generate_graphic": [],
     }
     for opt in action_opts:
         try:
             if opt.type == "search_video":
-                videos = youtube_search(query=opt.description, max_results=1, language=language)
+                videos = youtube_search(query=f"{question} {opt.description}", max_results=1, language=language)
                 action_results[opt.type].append(videos[0]["url"] if videos else None)
-            elif opt.type == "generate_image":
-                img_path = generate_image(prompt=opt.description)
-                action_results[opt.type].append(str(img_path))
+            elif opt.type == "search_diagrams":
+                img_path = search_diagram(keywords=f"{question} {opt.description}")
+                if img_path is not None:
+                    action_results[opt.type].append(str(img_path))
             elif opt.type == "generate_graphic":
                 chart_path = chart_code(requirement=opt.description)
                 action_results[opt.type].append(str(chart_path))
